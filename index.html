@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>응급처치 가이드</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4f5f3;
+    --surface:#ffffff;
+    --ink:#16191c;
+    --ink-soft:#5a6169;
+    --line:#e4e6e2;
+    --line-strong:#d0d3cd;
+    --emergency:#e8412c;
+    --emergency-dark:#c12d1c;
+    --shadow:0 1px 2px rgba(16,19,22,.04),0 8px 24px rgba(16,19,22,.06);
+    --shadow-lg:0 4px 12px rgba(16,19,22,.08),0 24px 48px rgba(16,19,22,.12);
+    --radius:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:'IBM Plex Sans KR',sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(60% 50% at 85% -5%, rgba(232,65,44,.06), transparent 70%),
+      radial-gradient(50% 40% at 0% 100%, rgba(40,120,140,.06), transparent 70%);
+  }
+  .wrap{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:0 20px 120px}
+
+  /* ===== Top bar ===== */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:saturate(1.4) blur(14px);
+    background:rgba(244,245,243,.82);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar-inner{
+    max-width:960px;margin:0 auto;padding:14px 20px;
+    display:flex;align-items:center;justify-content:space-between;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none}
+  .brand-mark{
+    width:38px;height:38px;border-radius:11px;
+    background:var(--emergency);
+    display:grid;place-items:center;flex-shrink:0;
+    box-shadow:0 4px 14px rgba(232,65,44,.32);
+  }
+  .brand-mark svg{width:22px;height:22px}
+  .brand-text b{font-weight:700;font-size:16px;letter-spacing:-.3px;display:block;line-height:1.1}
+  .brand-text span{font-size:11px;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;letter-spacing:.4px}
+
+  .call-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--emergency);color:#fff;border:none;cursor:pointer;
+    font-family:inherit;font-weight:700;font-size:15px;
+    padding:11px 18px;border-radius:13px;
+    box-shadow:0 4px 14px rgba(232,65,44,.35);
+    transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+    text-decoration:none;
+  }
+  .call-btn:hover{transform:translateY(-1px);background:var(--emergency-dark);box-shadow:0 6px 20px rgba(232,65,44,.45)}
+  .call-btn:active{transform:translateY(0)}
+  .call-btn .pulse{width:8px;height:8px;border-radius:50%;background:#fff;box-shadow:0 0 0 0 rgba(255,255,255,.7);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.6)}70%{box-shadow:0 0 0 7px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+
+  /* ===== Hero ===== */
+  .hero{padding:40px 0 8px;animation:rise .6s ease both}
+  .hero h1{font-size:clamp(28px,5vw,40px);font-weight:700;letter-spacing:-1px;line-height:1.12}
+  .hero h1 .accent{color:var(--emergency)}
+  .hero p{margin-top:12px;color:var(--ink-soft);font-size:15px;max-width:540px}
+  .quick{
+    margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;
+  }
+  .quick a{
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;
+    text-decoration:none;color:var(--ink);
+    background:var(--surface);border:1px solid var(--line-strong);
+    padding:8px 13px;border-radius:10px;display:inline-flex;align-items:center;gap:7px;
+    transition:border-color .15s,transform .15s;
+  }
+  .quick a:hover{transform:translateY(-1px);border-color:var(--ink)}
+  .quick a .dot{width:7px;height:7px;border-radius:50%}
+
+  /* ===== Search ===== */
+  .search{
+    margin:26px 0 6px;position:relative;animation:rise .6s .05s ease both;
+  }
+  .search input{
+    width:100%;font-family:inherit;font-size:15px;color:var(--ink);
+    padding:15px 18px 15px 48px;border-radius:14px;
+    border:1px solid var(--line-strong);background:var(--surface);
+    box-shadow:var(--shadow);outline:none;transition:border-color .15s,box-shadow .15s;
+  }
+  .search input:focus{border-color:var(--ink);box-shadow:var(--shadow-lg)}
+  .search input::placeholder{color:#9aa0a6}
+  .search svg{position:absolute;left:17px;top:50%;transform:translateY(-50%);width:19px;height:19px;color:#9aa0a6}
+
+  /* ===== Grid ===== */
+  .section-label{
+    margin:34px 0 16px;font-size:12px;font-weight:600;letter-spacing:1.4px;
+    text-transform:uppercase;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;
+    display:flex;align-items:center;gap:10px;
+  }
+  .section-label::after{content:"";flex:1;height:1px;background:var(--line)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+  .card{
+    position:relative;background:var(--surface);border:1px solid var(--line);
+    border-radius:var(--radius);padding:20px;cursor:pointer;overflow:hidden;
+    box-shadow:var(--shadow);
+    transition:transform .2s cubic-bezier(.2,.8,.2,1),box-shadow .2s,border-color .2s;
+    animation:rise .5s ease both;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:transparent}
+  .card::before{
+    content:"";position:absolute;left:0;top:0;bottom:0;width:5px;
+    background:var(--c);transition:width .2s;
+  }
+  .card:hover::before{width:8px}
+  .card-icon{
+    width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+    background:var(--c-soft);color:var(--c);margin-bottom:14px;
+  }
+  .card-icon svg{width:26px;height:26px}
+  .card h3{font-size:17px;font-weight:600;letter-spacing:-.3px;margin-bottom:5px}
+  .card p{font-size:13px;color:var(--ink-soft);line-height:1.45}
+  .card .tag{
+    display:inline-block;margin-top:13px;font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;font-weight:600;letter-spacing:.5px;padding:4px 9px;border-radius:7px;
+    background:var(--c-soft);color:var(--c);
+  }
+  .no-result{padding:50px 0;text-align:center;color:var(--ink-soft);font-size:15px;display:none}
+
+  /* ===== Detail (modal) ===== */
+  .overlay{
+    position:fixed;inset:0;z-index:100;background:rgba(16,19,22,.5);
+    backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .25s;
+  }
+  .overlay.open{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;z-index:101;left:50%;top:50%;transform:translate(-50%,-46%) scale(.98);
+    width:min(640px,calc(100vw - 32px));max-height:88vh;overflow-y:auto;
+    background:var(--bg);border-radius:24px;box-shadow:var(--shadow-lg);
+    opacity:0;pointer-events:none;transition:opacity .28s,transform .28s cubic-bezier(.2,.8,.2,1);
+  }
+  .sheet.open{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+  .sheet-head{
+    position:sticky;top:0;z-index:2;padding:24px 26px 20px;
+    background:var(--c);color:#fff;border-radius:24px 24px 0 0;
+    overflow:hidden;
+  }
+  .sheet-head::after{
+    content:"";position:absolute;right:-40px;top:-40px;width:180px;height:180px;border-radius:50%;
+    background:rgba(255,255,255,.10);
+  }
+  .sheet-head .row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;position:relative}
+  .sheet-head .h-icon{width:52px;height:52px;border-radius:15px;background:rgba(255,255,255,.18);display:grid;place-items:center;margin-bottom:14px}
+  .sheet-head .h-icon svg{width:30px;height:30px}
+  .sheet-head h2{font-size:24px;font-weight:700;letter-spacing:-.6px}
+  .sheet-head .sub{margin-top:6px;font-size:13.5px;opacity:.92;line-height:1.5;max-width:460px}
+  .close{
+    flex-shrink:0;width:38px;height:38px;border-radius:11px;border:none;cursor:pointer;
+    background:rgba(255,255,255,.18);color:#fff;display:grid;place-items:center;transition:background .15s;
+  }
+  .close:hover{background:rgba(255,255,255,.32)}
+  .sheet-body{padding:22px 26px 30px}
+
+  .alert{
+    display:flex;gap:12px;align-items:flex-start;
+    background:#fff4f2;border:1px solid #f6cfc8;color:var(--emergency-dark);
+    padding:14px 16px;border-radius:13px;font-size:13.5px;font-weight:500;line-height:1.5;margin-bottom:22px;
+  }
+  .alert svg{width:20px;height:20px;flex-shrink:0;margin-top:1px}
+
+  .steps-title{font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;margin:6px 0 16px}
+  .step{display:flex;gap:15px;margin-bottom:16px;position:relative}
+  .step:not(:last-child)::before{content:"";position:absolute;left:15px;top:34px;bottom:-16px;width:2px;background:var(--line-strong)}
+  .step-num{
+    flex-shrink:0;width:32px;height:32px;border-radius:10px;background:var(--c);color:#fff;
+    display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:14px;
+    box-shadow:0 3px 8px var(--c-glow);
+  }
+  .step-body{padding-top:3px}
+  .step-body b{font-size:15px;font-weight:600;display:block;margin-bottom:2px}
+  .step-body span{font-size:13.5px;color:var(--ink-soft);line-height:1.5}
+
+  .dual{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px}
+  .dual .box{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:16px}
+  .dual .box h4{font-size:13px;font-weight:600;display:flex;align-items:center;gap:7px;margin-bottom:11px}
+  .dual .box.do h4{color:#1f9d63}
+  .dual .box.dont h4{color:#d8443a}
+  .dual .box h4 svg{width:17px;height:17px}
+  .dual .box li{list-style:none;font-size:13px;color:var(--ink-soft);line-height:1.5;padding-left:16px;position:relative;margin-bottom:8px}
+  .dual .box li::before{position:absolute;left:0;top:0;font-weight:700}
+  .dual .box.do li::before{content:"+";color:#1f9d63}
+  .dual .box.dont li::before{content:"×";color:#d8443a}
+
+  .disclaimer{
+    margin-top:38px;padding:16px 18px;border-radius:14px;
+    background:#eef0ec;border:1px dashed var(--line-strong);
+    font-size:12px;color:var(--ink-soft);line-height:1.6;
+  }
+  .disclaimer b{color:var(--ink);font-weight:600}
+
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  @media (max-width:560px){
+    .brand-text span{display:none}
+    .call-btn span.label{display:none}
+    .call-btn{padding:11px 14px}
+    .dual{grid-template-columns:1fr}
+    .sheet{max-height:92vh;border-radius:22px 22px 0 0;top:auto;bottom:0;transform:translate(-50%,40px)}
+    .sheet.open{transform:translate(-50%,0)}
+    .grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand" onclick="closeSheet()">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M3 12h18" stroke="#fff" stroke-width="3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand-text">
+        <b>응급처치 가이드</b>
+        <span>FIRST&nbsp;AID&nbsp;/&nbsp;EMERGENCY</span>
+      </div>
+    </div>
+    <a class="call-btn" href="tel:119">
+      <span class="pulse"></span><span class="label">119 신고</span>
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 005 5L14 13l5 2v3a2 2 0 01-2 2A15 15 0 013 6a2 2 0 012-2z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <h1>침착하게.<br><span class="accent">한 단계씩</span> 따라 하세요.</h1>
+    <p>상황에 맞는 카드를 선택하면 단계별 응급처치 방법과 주의사항을 안내합니다. 생명이 위급할 때는 무엇보다 먼저 119에 신고하세요.</p>
+    <div class="quick">
+      <a href="tel:119"><span class="dot" style="background:#e8412c"></span>119 · 화재 / 구급</a>
+      <a href="tel:112"><span class="dot" style="background:#2b6cb0"></span>112 · 범죄 신고</a>
+      <a href="tel:1339"><span class="dot" style="background:#1f9d63"></span>1339 · 응급의료상담</a>
+    </div>
+  </section>
+
+  <div class="search">
+    <svg viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input id="searchInput" type="text" placeholder="증상이나 상황을 검색하세요  (예: 화상, 질식, 심정지)" oninput="filterCards(this.value)">
+  </div>
+
+  <div class="section-label">응급 상황 선택</div>
+  <div class="grid" id="grid"></div>
+  <div class="no-result" id="noResult">검색 결과가 없습니다. 다른 키워드로 검색해 보세요.</div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet"></div>
+
+<script>
+const ICONS = {
+  heart:'<path d="M12 21s-7-4.5-9.5-9C.8 8.5 2.3 5 5.5 5 7.5 5 9 6.2 12 9c3-2.8 4.5-4 6.5-4 3.2 0 4.7 3.5 3 7-2.5 4.5-9.5 9-9.5 9z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M5 12h3l1.5-3 2 5 1.5-3H19" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>',
+  choke:'<circle cx="12" cy="7" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M7 21c0-3.5 2-6 5-6s5 2.5 5 6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14.5 9.5c1.5 1 1.5 3 0 4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  blood:'<path d="M12 3c3 4.5 6 7.8 6 11a6 6 0 11-12 0c0-3.2 3-6.5 6-11z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+  burn:'<path d="M12 3c1 3-1 4-1 6 0 1.5 1 2 1 2s1-1 1-3c2 2 3 4 3 6a4 4 0 11-8 0c0-4 4-6 4-11z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/>',
+  bone:'<path d="M7 7a2.2 2.2 0 10-3.1 2.1L12 17l5.1 5.1M17 17a2.2 2.2 0 103.1-2.1L12 7 6.9 1.9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" transform="translate(0 0)"/><path d="M5 5l14 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  brain:'<path d="M9 4a3 3 0 00-3 3 3 3 0 00-1 5 3 3 0 002 4 3 3 0 005 1V5a3 3 0 00-3-1zM15 4a3 3 0 013 3 3 3 0 011 5 3 3 0 01-2 4 3 3 0 01-5 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+  poison:'<path d="M12 3a5 5 0 015 5v1H7V8a5 5 0 015-5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 9h12l-1 9a3 3 0 01-3 3h-4a3 3 0 01-3-3L6 9z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><circle cx="12" cy="14" r="1.4" fill="currentColor"/>',
+  thermo:'<path d="M10 13V5a2 2 0 114 0v8a4 4 0 11-4 0z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><circle cx="12" cy="16" r="1.6" fill="currentColor"/>',
+  allergy:'<circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.7"/><path d="M12 4v3M12 17v3M4 12h3M17 12h3M6.3 6.3l2.1 2.1M15.6 15.6l2.1 2.1M17.7 6.3l-2.1 2.1M8.4 15.6l-2.1 2.1" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>',
+  faint:'<circle cx="12" cy="6" r="2.5" stroke="currentColor" stroke-width="1.7"/><path d="M4 19c2-1 4-1.5 8-1.5s6 .5 8 1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M6 14h12" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>'
+};
+const WARN='<path d="M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 9v4M12 16.5v.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>';
+
+const DATA = [
+{
+  id:'cpr', color:'#e8412c', soft:'#fdecea', glow:'rgba(232,65,44,.35)', icon:'heart',
+  title:'심정지 · 심폐소생술', tag:'CPR', kw:'심정지 심폐소생술 cpr 가슴압박 의식없음 호흡없음 쓰러짐',
+  desc:'반응과 호흡이 없는 사람에게 가슴 압박을 시행합니다.',
+  critical:'반응·호흡이 없다면 즉시 119에 신고하고 가슴 압박을 시작하세요. 1초가 생사를 가릅니다.',
+  steps:[
+    ['반응 확인','양쪽 어깨를 두드리며 "괜찮으세요?"라고 큰 소리로 부릅니다.'],
+    ['119 신고 & AED 요청','주변 사람을 콕 집어 "당신이 119에 신고, 당신이 자동심장충격기(AED)를 가져와 주세요"라고 지목합니다.'],
+    ['가슴 압박 30회','가슴 정중앙(복장뼈 아래쪽)을 약 5cm 깊이로, 분당 100~120회 속도로 강하고 빠르게 압박합니다.'],
+    ['인공호흡 2회','머리를 젖혀 기도를 열고 코를 막은 뒤 1초씩 2회 숨을 불어넣습니다. (자신 없으면 압박만 계속)'],
+    ['반복','119 도착 또는 환자가 깨어날 때까지 압박 30회 : 호흡 2회를 멈추지 않고 반복합니다.']
+  ],
+  dos:['바닥이 단단한 곳에 눕히기','팔을 곧게 펴고 체중을 실어 압박','AED가 오면 음성 안내에 따라 사용'],
+  donts:['압박 중간에 자주 멈추지 않기','너무 얕게 누르지 않기','확신 없이 약물 투여하지 않기']
+},
+{
+  id:'choke', color:'#f08a24', soft:'#fdf0e3', glow:'rgba(240,138,36,.35)', icon:'choke',
+  title:'기도 폐쇄 · 질식', tag:'CHOKING', kw:'질식 기도폐쇄 목막힘 사레 하임리히 이물질 음식걸림',
+  desc:'음식·이물질로 숨을 못 쉴 때의 하임리히법입니다.',
+  critical:'말을 못 하고 목을 움켜쥐며 얼굴이 파래지면 완전 기도폐쇄입니다. 즉시 조치하세요.',
+  steps:[
+    ['기침 유도','기침이 가능하면 멈추지 말고 세게 기침하도록 격려합니다.'],
+    ['등 두드리기 5회','환자를 앞으로 숙이게 한 뒤 양 날개뼈 사이를 손바닥으로 5회 강하게 칩니다.'],
+    ['복부 밀어내기 5회','뒤에서 안고 명치와 배꼽 사이를 주먹으로 감싸 안쪽·위쪽으로 5회 당겨 올립니다(하임리히법).'],
+    ['반복','이물질이 나오거나 숨을 쉴 때까지 등 두드리기 5회 + 복부 밀어내기 5회를 번갈아 반복합니다.'],
+    ['의식 잃으면','환자가 의식을 잃으면 바닥에 눕히고 즉시 심폐소생술(가슴 압박)을 시작합니다.']
+  ],
+  dos:['임산부·비만은 가슴(복장뼈) 밀어내기','영아는 등 두드리기 5회+가슴 압박 5회','조치 후에도 병원 진료 받기'],
+  donts:['손가락으로 무리하게 입속 후비기 금지','보이지 않는 이물질 억지로 꺼내려 하지 않기','말·기침이 되는데 등 두드리기 금지']
+},
+{
+  id:'bleed', color:'#c0182f', soft:'#fbe9ec', glow:'rgba(192,24,47,.35)', icon:'blood',
+  title:'심한 출혈', tag:'BLEEDING', kw:'출혈 피 상처 베임 지혈 자상 절단',
+  desc:'직접 압박으로 출혈을 멈추는 것이 핵심입니다.',
+  critical:'피가 솟구치거나 멈추지 않으면 강하게 압박하면서 즉시 119에 신고하세요.',
+  steps:[
+    ['직접 압박','깨끗한 천이나 거즈로 상처를 덮고 손바닥으로 강하게 눌러 5분 이상 압박합니다.'],
+    ['상처 부위 올리기','가능하면 출혈 부위를 심장보다 높게 들어 올립니다.'],
+    ['덧대기','피가 천에 배어 나와도 떼지 말고 그 위에 새 천을 더 대고 계속 압박합니다.'],
+    ['고정','지혈된 후 압박붕대로 감아 고정하고 환자를 안정시킵니다.'],
+    ['절단 시','잘린 부위는 깨끗한 비닐에 담아 얼음물 위에 (직접 닿지 않게) 보관해 함께 이송합니다.']
+  ],
+  dos:['처치 전 가능하면 장갑 착용','환자를 따뜻하게·안정 유지','쇼크 징후(창백·식은땀) 시 119'],
+  donts:['배어 나온 천을 떼어내지 않기','상처에 박힌 큰 이물질 뽑지 않기','지혈대는 함부로 사용하지 않기']
+},
+{
+  id:'burn', color:'#d99412', soft:'#fbf2dc', glow:'rgba(217,148,18,.35)', icon:'burn',
+  title:'화상', tag:'BURN', kw:'화상 데임 뜨거움 끓는물 불 열상 물집',
+  desc:'흐르는 찬물로 식히는 것이 가장 중요합니다.',
+  critical:'얼굴·기도·관절·넓은 부위 화상이거나 물집이 크면 병원 진료가 필요합니다.',
+  steps:[
+    ['열원 제거','뜨거운 옷·액세서리를 부푸기 전에 빠르게 제거합니다. (피부에 붙은 것은 그대로 둠)'],
+    ['찬물로 식히기','흐르는 시원한 물(차갑지만 얼음물 아님)에 15~20분간 화상 부위를 식힙니다.'],
+    ['느슨히 덮기','깨끗한 거즈나 비닐랩으로 상처를 느슨하게 덮어 오염을 막습니다.'],
+    ['통증 관리','환자를 안정시키고 필요 시 진통제를 복용하게 합니다.'],
+    ['진료','넓거나 깊은 화상은 임의 처치를 멈추고 즉시 병원으로 이송합니다.']
+  ],
+  dos:['반지·시계 등 붓기 전에 빼기','화상 부위 깨끗하게 유지','수분 충분히 섭취'],
+  donts:['얼음 직접 대기 금지','물집 터뜨리지 않기','된장·기름·치약 등 바르지 않기']
+},
+{
+  id:'fracture', color:'#1f8a8a', soft:'#e2f3f3', glow:'rgba(31,138,138,.35)', icon:'bone',
+  title:'골절 · 염좌', tag:'FRACTURE', kw:'골절 부러짐 삐끗 염좌 발목 깁스 부목 관절',
+  desc:'움직이지 않게 고정하는 것이 원칙입니다.',
+  critical:'뼈가 보이거나 변형이 심하면 만지지 말고 그대로 고정한 뒤 119에 신고하세요.',
+  steps:[
+    ['움직임 최소화','다친 부위를 무리하게 펴거나 맞추려 하지 말고 발견된 자세 그대로 둡니다.'],
+    ['고정(부목)','부목·단단한 판자·잡지 등으로 위·아래 관절까지 포함해 고정합니다.'],
+    ['냉찜질','부기·통증 완화를 위해 천에 싼 얼음을 15~20분간 댑니다.'],
+    ['올리기','가능하면 다친 부위를 심장보다 높게 받쳐 둡니다.'],
+    ['이송','체중을 싣지 않게 하고 안정된 자세로 병원으로 이송합니다.']
+  ],
+  dos:['반지·신발 등 붓기 전 제거','순환 확인(손발 색·감각)','RICE: 휴식·냉찜질·압박·거상'],
+  donts:['튀어나온 뼈 밀어넣지 않기','다친 부위로 걷거나 쓰지 않기','무리하게 부위 맞추지 않기']
+},
+{
+  id:'seizure', color:'#7b4bd1', soft:'#efe8fb', glow:'rgba(123,75,209,.35)', icon:'brain',
+  title:'발작 · 경련', tag:'SEIZURE', kw:'발작 경련 간질 쓰러짐 떨림 의식 뇌전증',
+  desc:'다치지 않게 보호하고 끝날 때까지 기다립니다.',
+  critical:'발작이 5분 이상 지속되거나 연달아 일어나면 즉시 119에 신고하세요.',
+  steps:[
+    ['주변 정리','부딪힐 만한 위험한 물건을 치우고 공간을 확보합니다.'],
+    ['머리 보호','부드러운 것을 머리 밑에 받쳐 부상을 막습니다.'],
+    ['시간 측정','발작이 시작된 시각을 확인합니다. (지속 시간이 중요)'],
+    ['옆으로 눕히기','경련이 멈추면 침·구토물이 막히지 않도록 옆으로(회복 자세) 눕힙니다.'],
+    ['곁에 있기','완전히 깨어 의식이 돌아올 때까지 안심시키며 곁을 지킵니다.']
+  ],
+  dos:['넥타이·단추 등 조이는 것 풀기','발작 양상·시간 기록','깨어난 뒤 차분히 설명'],
+  donts:['입에 손가락·물건 넣지 않기','억지로 몸을 붙잡지 않기','발작 중 음식·물 주지 않기']
+},
+{
+  id:'poison', color:'#2f8f4e', soft:'#e5f4ea', glow:'rgba(47,143,78,.35)', icon:'poison',
+  title:'중독 · 음독', tag:'POISON', kw:'중독 음독 약물 농약 세제 가스 일산화탄소 삼킴',
+  desc:'무엇을 얼마나 먹었는지 파악하는 것이 우선입니다.',
+  critical:'독극물·약물 섭취 시 1339(응급의료상담) 또는 119에 즉시 전화해 지시를 받으세요.',
+  steps:[
+    ['안전 확보','가스 중독이면 환자를 신선한 공기가 있는 곳으로 옮기고 환기합니다.'],
+    ['정보 확인','무엇을·언제·얼마나 섭취했는지 확인하고 용기·라벨을 챙깁니다.'],
+    ['상담 전화','1339 또는 119에 전화해 상황을 설명하고 전문가의 지시를 따릅니다.'],
+    ['기도 확보','의식이 없으면 옆으로 눕혀 토사물이 막히지 않게 합니다.'],
+    ['이송','섭취한 물질·용기를 가지고 함께 병원으로 이송합니다.']
+  ],
+  dos:['섭취 물질의 용기·설명서 보관','의식 없으면 회복 자세','일산화탄소 의심 시 즉시 환기'],
+  donts:['임의로 토하게 하지 않기','중화한다고 다른 것 먹이지 않기','의식 없는 사람에게 물 주지 않기']
+},
+{
+  id:'heat', color:'#2b74c2', soft:'#e6f0fb', glow:'rgba(43,116,194,.35)', icon:'thermo',
+  title:'열사병 · 저체온', tag:'TEMP', kw:'열사병 일사병 더위 탈진 저체온 한랭 동상 체온',
+  desc:'몸의 온도를 정상으로 되돌리는 것이 핵심입니다.',
+  critical:'의식이 흐려지거나 체온이 매우 높/낮으면 응급 상황입니다. 즉시 119에 신고하세요.',
+  steps:[
+    ['장소 이동','열사병은 시원한 그늘로, 저체온은 따뜻한 실내로 이동합니다.'],
+    ['옷 조절','열사병은 옷을 느슨히 풀고, 저체온은 젖은 옷을 벗기고 마른 담요로 감쌉니다.'],
+    ['체온 조절','열사병: 목·겨드랑이·사타구니를 시원하게. 저체온: 몸통부터 서서히 데웁니다.'],
+    ['수분 보충','의식이 또렷하면 시원한(또는 따뜻한) 물을 조금씩 마시게 합니다.'],
+    ['관찰','상태가 호전되지 않거나 의식이 떨어지면 즉시 병원으로 이송합니다.']
+  ],
+  dos:['시원하거나 따뜻한 환경 확보','의식 있을 때만 수분 공급','동상 부위는 미지근한 물에'],
+  donts:['저체온 환자에게 술 주지 않기','동상 부위 문지르지 않기','의식 없는 사람에게 물 주지 않기']
+},
+{
+  id:'allergy', color:'#d6357f', soft:'#fbe7f1', glow:'rgba(214,53,127,.35)', icon:'allergy',
+  title:'알레르기 · 아나필락시스', tag:'ALLERGY', kw:'알레르기 아나필락시스 두드러기 호흡곤란 에피펜 벌쏘임 음식알레르기 붓기',
+  desc:'호흡곤란·부종 동반 시 생명을 위협하는 응급입니다.',
+  critical:'입술·혀가 붓거나 숨쉬기 힘들면 아나필락시스입니다. 즉시 119에 신고하세요.',
+  steps:[
+    ['원인 제거','벌침은 카드 등으로 긁어 빼고, 알레르기 유발 음식·약물 노출을 중단합니다.'],
+    ['에피네프린','처방받은 자가주사기(에피펜)가 있으면 허벅지 바깥쪽에 즉시 주사합니다.'],
+    ['119 신고','증상이 가벼워 보여도 다시 악화될 수 있으니 반드시 신고합니다.'],
+    ['편한 자세','호흡이 힘들면 앉히고, 어지러우면 다리를 올려 눕힙니다.'],
+    ['관찰','의식·호흡을 계속 살피고, 멈추면 심폐소생술을 시작합니다.']
+  ],
+  dos:['에피펜 사용 후에도 반드시 병원행','과거 알레르기 정보 알리기','5~15분 호전 없으면 재투여 고려'],
+  donts:['괜찮아 보인다고 방치하지 않기','구강 붓기 시 음식·물 주지 않기','똑바로 눕혀 호흡 방해하지 않기']
+},
+{
+  id:'faint', color:'#4a5bbf', soft:'#e8eafb', glow:'rgba(74,91,191,.35)', icon:'faint',
+  title:'실신 · 의식 소실', tag:'FAINTING', kw:'실신 기절 어지러움 쓰러짐 의식 혈압 빈혈',
+  desc:'다리를 올려 뇌로 혈류를 보내는 것이 핵심입니다.',
+  critical:'1~2분 내 깨어나지 않거나 호흡이 없으면 즉시 119에 신고하고 심폐소생술을 준비하세요.',
+  steps:[
+    ['눕히기','환자를 평평한 곳에 등을 대고 눕힙니다.'],
+    ['다리 올리기','다리를 약 30cm 정도 올려 뇌로 혈류가 가도록 돕습니다.'],
+    ['기도 확보','옷의 조이는 부분을 풀고 신선한 공기가 통하게 합니다.'],
+    ['관찰','의식·호흡을 확인합니다. 보통 1~2분 내 회복됩니다.'],
+    ['회복 후','깨어나면 바로 일으키지 말고 잠시 누워 안정하게 합니다.']
+  ],
+  dos:['주변 위험 요소 제거','회복 후 천천히 일어나게','자주 반복되면 병원 진료'],
+  donts:['깨어나자마자 일으켜 세우지 않기','뺨 강하게 때리지 않기','의식 없을 때 물·음식 주지 않기']
+}
+];
+
+const grid = document.getElementById('grid');
+const noResult = document.getElementById('noResult');
+
+function svg(name, cls){return `<svg viewBox="0 0 24 24" fill="none">${ICONS[name]}</svg>`}
+
+function render(list){
+  grid.innerHTML = list.map((d,i)=>`
+    <article class="card" style="--c:${d.color};--c-soft:${d.soft};--c-glow:${d.glow};animation-delay:${i*0.04}s" onclick="openSheet('${d.id}')">
+      <div class="card-icon">${svg(d.icon)}</div>
+      <h3>${d.title}</h3>
+      <p>${d.desc}</p>
+      <span class="tag">${d.tag}</span>
+    </article>`).join('');
+  noResult.style.display = list.length ? 'none' : 'block';
+}
+
+function filterCards(q){
+  q = q.trim().toLowerCase();
+  if(!q){render(DATA);return}
+  render(DATA.filter(d => (d.title+' '+d.kw+' '+d.desc).toLowerCase().includes(q)));
+}
+
+const sheet = document.getElementById('sheet');
+const overlay = document.getElementById('overlay');
+
+function openSheet(id){
+  const d = DATA.find(x=>x.id===id);
+  if(!d) return;
+  sheet.style.setProperty('--c', d.color);
+  sheet.style.setProperty('--c-glow', d.glow);
+  sheet.innerHTML = `
+    <div class="sheet-head" style="--c:${d.color}">
+      <div class="row">
+        <div>
+          <div class="h-icon">${svg(d.icon)}</div>
+          <h2>${d.title}</h2>
+          <p class="sub">${d.desc}</p>
+        </div>
+        <button class="close" onclick="closeSheet()" aria-label="닫기">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="sheet-body">
+      <div class="alert">
+        <svg viewBox="0 0 24 24" fill="none">${WARN}</svg>
+        <span>${d.critical}</span>
+      </div>
+      <div class="steps-title">처치 단계</div>
+      ${d.steps.map((s,i)=>`
+        <div class="step">
+          <div class="step-num">${i+1}</div>
+          <div class="step-body"><b>${s[0]}</b><span>${s[1]}</span></div>
+        </div>`).join('')}
+      <div class="dual">
+        <div class="box do">
+          <h4><svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>해야 할 것</h4>
+          <ul>${d.dos.map(x=>`<li>${x}</li>`).join('')}</ul>
+        </div>
+        <div class="box dont">
+          <h4><svg viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>하지 말 것</h4>
+          <ul>${d.donts.map(x=>`<li>${x}</li>`).join('')}</ul>
+        </div>
+      </div>
+      <div class="disclaimer">
+        <b>안내</b> · 본 가이드는 일반적인 응급처치 정보를 제공하기 위한 참고용이며, 전문 의료 행위를 대체하지 않습니다.
+        실제 응급 상황에서는 무엇보다 먼저 <b>119</b>에 신고하고 구급대원·의료진의 지시를 따르세요.
+        정기적으로 인증된 응급처치 교육을 받아두는 것을 권장합니다.
+      </div>
+    </div>`;
+  sheet.scrollTop = 0;
+  overlay.classList.add('open');
+  sheet.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeSheet(){
+  overlay.classList.remove('open');
+  sheet.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeSheet(); });
+
+render(DATA);
+</script>
+</body>
+</html>
